@@ -29,9 +29,10 @@ class Map:
                      ('W','l'):'S',('W','r'):'N'}
         return self.rule[(direction,action)]
     def update_map(self,window,action):
+        print(self.direction)
         if len(self.map) == 0:
             self.map = copy.deepcopy(window)
-            self.map[(0,0)] = 'start'
+            self.map[(0,0)] = 's'
             self.South_board = -2
             self.North_board = 2
             self.East_board = 2
@@ -39,46 +40,68 @@ class Map:
         else:
             if action == 'l' or action == 'r':
                 self.direction = self.get_direction(self.direction,action)
-                print(self.direction)
+                #print(self.direction)
             elif action == 'f':
                 if self.direction == 'S':
-                    self.y -= 1
-                    for i in range(2,-3,-1):
-                        self.map[(self.x - i,self.y - 2)] = window[-i,-2]
-                if self.direction == 'N':
-                    self.y += 1
-                    for i in range(2,-3,-1):
-                        self.map[(self.x - i,self.y + 2)] = window[-i,2]
-                if self.direction == 'E':
-                    self.x += 1
-                    for i in range(2,-3,-1):
-                        self.map[(self.x + 2,self.y - i)] = window[2,-i]
-                if self.direction == 'W':
                     self.x -= 1
+                    self.South_board -= 1
+                    if self.map[(self.x ,self.y)] == '*':
+                        self.x += 1
+                        return
                     for i in range(2,-3,-1):
-                        self.map[(self.x - 2,self.y - i)] = window[-2,-i]
+                        self.map[(self.x - 2,self.y - i)] = window[(-2,-i)]
+                if self.direction == 'N':
+                    self.x += 1
+                    if self.map[(self.x ,self.y)] == '*':
+                        self.x -= 1
+                        return
+                    self.North_board += 1
+                    for i in range(2,-3,-1):
+                        self.map[(self.x + 2,self.y - i)] = window[(2,-i)]
+                if self.direction == 'E':
+                    self.y += 1
+                    if self.map[(self.x ,self.y)] == '*':
+                        self.y -= 1
+                        return
+                    self.East_board += 1
+                    for i in range(2,-3,-1):
+                        self.map[(self.x - i,self.y + 2)] = window[(-i,2)]
+                if self.direction == 'W':
+                    self.y -= 1
+                    if self.map[(self.x ,self.y)] == '*':
+                        self.y += 1
+                        return
+                    self.West_board -= 1
+                    for i in range(2,-3,-1):
+                        self.map[(self.x - i,self.y - 2)] = window[(-i,-2)]
     def print_map(self):
         L = []
         for i in self.map:
             L.append(i)
         L.sort()
-        for i in L:
-            print(self.map[i])
-
+        for x in range(self.North_board,self.South_board - 1, -1):
+            for y in range(self.West_board,self.East_board + 1):
+                if (x,y) in self.map:
+                    #print((x,y), end = '')
+                    print(self.map[(x,y)], end ='')
+                else:
+                    print('!',end= '')
+            print()
+        
 window ={}
-action = ''
+action = None
 M = Map()
 while True:
-    for j in range(-2,3):
-        for i in range(2,-3,-1):
-            if not (i == 0 and j == 0):
+    for x in range(-2,3):
+        for y in range(2,-3,-1):
+            if not (x == 0 and y == 0):
                 ch = messg.read(1)
                 if not ch:
                     print('Game Over')
                     sys.exit()
-                window[(i,j)] = ch
-    #print(window)
-    action = input('action:')
+                window[(x,y)] = ch
+    print(window)
     M.update_map(window,action)
-    M.print_map()
+    #M.print_map()
+    action = input('action:')
     Clientsocket.send(action.encode())
