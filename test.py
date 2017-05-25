@@ -45,35 +45,35 @@ class Map:
                 if self.direction == 'S':
                     self.x -= 1
                     self.South_board -= 1
-                    if self.map[(self.x ,self.y)] == '*':
+                    if self.map[(self.x ,self.y)] == '*' or self.map[(self.x ,self.y)] == 'T' or self.map[(self.x ,self.y)] == '-':
                         self.x += 1
                         return
-                    for i in range(2,-3,-1):
-                        self.map[(self.x - 2,self.y - i)] = window[(-2,-i)]
+                    for i in range(-2,3):
+                        self.map[(self.x - 2,self.y + i)] = window[(-2,i)]
                 if self.direction == 'N':
                     self.x += 1
-                    if self.map[(self.x ,self.y)] == '*':
+                    if self.map[(self.x ,self.y)] == '*' or self.map[(self.x ,self.y)] == 'T' or self.map[(self.x ,self.y)] == '-':
                         self.x -= 1
                         return
                     self.North_board += 1
-                    for i in range(2,-3,-1):
-                        self.map[(self.x + 2,self.y - i)] = window[(-2,-i)]
+                    for i in range(-2,3):
+                        self.map[(self.x + 2,self.y - i)] = window[(-2,i)]
                 if self.direction == 'E':
                     self.y += 1
-                    if self.map[(self.x ,self.y)] == '*':
+                    if self.map[(self.x ,self.y)] == '*' or self.map[(self.x ,self.y)] == 'T' or self.map[(self.x ,self.y)] == '-':
                         self.y -= 1
                         return
                     self.East_board += 1
-                    for i in range(2,-3,-1):
-                        self.map[(self.x - i,self.y + 2)] = window[(-2,-i)]
+                    for i in range(-2,3):
+                        self.map[(self.x + i,self.y + 2)] = window[(-2,i)]
                 if self.direction == 'W':
                     self.y -= 1
-                    if self.map[(self.x ,self.y)] == '*':
+                    if self.map[(self.x ,self.y)] == '*' or self.map[(self.x ,self.y)] == 'T' or self.map[(self.x ,self.y)] == '-':
                         self.y += 1
                         return
                     self.West_board -= 1
-                    for i in range(2,-3,-1):
-                        self.map[(self.x - i,self.y - 2)] = window[(-2,-i)]
+                    for i in range(-2,3):
+                        self.map[(self.x - i,self.y - 2)] = window[(-2,i)]
     def print_map1(self):
         L = []
         for i in self.map:
@@ -82,13 +82,16 @@ class Map:
         for x in range(self.North_board,self.South_board - 1, -1):
             for y in range(self.West_board,self.East_board + 1):
                 if (x,y) in self.map:
-                    #print((x,y), end = '')
                     print(self.map[(x,y)], end ='')
                 else:
                     print('!',end= '')
             print()
     def print_map(self):
         print(self.map)
+        print(self.South_board)
+        print(self.North_board)
+        print(self.East_board )
+        print(self.West_board)
         
 window ={}
 action = None
@@ -104,6 +107,6 @@ while True:
                 window[(x,y)] = ch
     #print(window)
     M.update_map(window,action)
-    M.print_map()
+    M.print_map1()
     action = input('action:')
     Clientsocket.send(action.encode())
