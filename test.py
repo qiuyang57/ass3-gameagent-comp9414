@@ -57,7 +57,7 @@ class Map:
                         return
                     self.North_board += 1
                     for i in range(2,-3,-1):
-                        self.map[(self.x + 2,self.y - i)] = window[(2,-i)]
+                        self.map[(self.x + 2,self.y - i)] = window[(-2,-i)]
                 if self.direction == 'E':
                     self.y += 1
                     if self.map[(self.x ,self.y)] == '*':
@@ -65,7 +65,7 @@ class Map:
                         return
                     self.East_board += 1
                     for i in range(2,-3,-1):
-                        self.map[(self.x - i,self.y + 2)] = window[(-i,2)]
+                        self.map[(self.x - i,self.y + 2)] = window[(-2,-i)]
                 if self.direction == 'W':
                     self.y -= 1
                     if self.map[(self.x ,self.y)] == '*':
@@ -73,8 +73,8 @@ class Map:
                         return
                     self.West_board -= 1
                     for i in range(2,-3,-1):
-                        self.map[(self.x - i,self.y - 2)] = window[(-i,-2)]
-    def print_map(self):
+                        self.map[(self.x - i,self.y - 2)] = window[(-2,-i)]
+    def print_map1(self):
         L = []
         for i in self.map:
             L.append(i)
@@ -87,6 +87,8 @@ class Map:
                 else:
                     print('!',end= '')
             print()
+    def print_map(self):
+        print(self.map)
         
 window ={}
 action = None
@@ -100,8 +102,8 @@ while True:
                     print('Game Over')
                     sys.exit()
                 window[(x,y)] = ch
-    print(window)
+    #print(window)
     M.update_map(window,action)
-    #M.print_map()
+    M.print_map()
     action = input('action:')
     Clientsocket.send(action.encode())
